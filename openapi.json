@@ -1,0 +1,1137 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/health": {
+            "get": {
+                "operationId": "HealthController_check",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The Health Check is successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {},
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "The Health Check is not successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                },
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/conversation": {
+            "post": {
+                "operationId": "ConversationController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateChatConversationDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatConversation"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/direct": {
+            "post": {
+                "operationId": "ConversationController_createDirectConversation",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DirectChatConversationDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatConversation"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/{conversationId}": {
+            "put": {
+                "operationId": "ConversationController_update",
+                "parameters": [
+                    {
+                        "name": "conversationId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateChatConversationDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/{conversationId}/tags": {
+            "put": {
+                "operationId": "ConversationController_updateTags",
+                "parameters": [
+                    {
+                        "name": "conversationId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Tag"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatConversation"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/{conversationId}/member": {
+            "post": {
+                "operationId": "ConversationController_addMember",
+                "parameters": [
+                    {
+                        "name": "conversationId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddMemberDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatConversationModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/{conversationId}/member/{memberId}": {
+            "delete": {
+                "operationId": "ConversationController_deleteMember",
+                "parameters": [
+                    {
+                        "name": "conversationId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "memberId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatConversationModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/block-user": {
+            "post": {
+                "operationId": "ConversationController_blockMember",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BlockUserDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/unblock-user": {
+            "post": {
+                "operationId": "ConversationController_unblockMember",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BlockUserDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/migrate-permissions": {
+            "post": {
+                "operationId": "ConversationController_migratePermissions",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MigratePermissionsDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Migration of Permissions done successfully"
+                    },
+                    "501": {
+                        "description": "Migrations are currently allowed only for community"
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/migrate-last-messages": {
+            "post": {
+                "operationId": "ConversationController_migrateLastMessages",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Migration of Last Messages done successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/unread-message-count/{userId}": {
+            "get": {
+                "operationId": "ConversationController_getUnreadMessageCounts",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "conversationIds",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/messages": {
+            "get": {
+                "operationId": "ConversationController_getMessages",
+                "parameters": [
+                    {
+                        "name": "conversationIds",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "startDate",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/user-blocks/toggle": {
+            "post": {
+                "operationId": "UserBlocksController_toggleUserBlock",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BlockUserRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "info": {
+        "title": "Chat service",
+        "description": "The chat REST API description",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+        "securitySchemes": {
+            "X-API-KEY": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "x-api-key",
+                "description": "API Key For External calls"
+            }
+        },
+        "schemas": {
+            "Context": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "enum": [
+                            "university",
+                            "isDirectConversation",
+                            "isNewsFeedConversation"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ]
+            },
+            "Conditions": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "object"
+                    },
+                    "universityId": {
+                        "type": "object"
+                    },
+                    "accountRole": {
+                        "type": "string",
+                        "enum": [
+                            "applicant",
+                            "mentor",
+                            "staff",
+                            "university",
+                            "admin"
+                        ]
+                    }
+                }
+            },
+            "Permission": {
+                "type": "object",
+                "properties": {
+                    "action": {
+                        "enum": [
+                            "manage",
+                            "readConversation",
+                            "sendMessage",
+                            "updateMessage",
+                            "deleteMessage",
+                            "resolveMessage",
+                            "pinMessage",
+                            "createPoll"
+                        ],
+                        "type": "string"
+                    },
+                    "subject": {
+                        "enum": [
+                            "User",
+                            "all"
+                        ],
+                        "type": "string"
+                    },
+                    "conditions": {
+                        "$ref": "#/components/schemas/Conditions"
+                    }
+                },
+                "required": [
+                    "action",
+                    "subject"
+                ]
+            },
+            "Tag": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "subTopic"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ]
+            },
+            "CreateChatConversationDto": {
+                "type": "object",
+                "properties": {
+                    "product": {
+                        "enum": [
+                            "virtualEvent",
+                            "community"
+                        ],
+                        "type": "string"
+                    },
+                    "context": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Context"
+                        }
+                    },
+                    "permissions": {
+                        "default": [],
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Permission"
+                        }
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Tag"
+                        }
+                    },
+                    "memberIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "blockedMemberIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "product",
+                    "context"
+                ]
+            },
+            "ObjectID": {
+                "type": "object",
+                "properties": {}
+            },
+            "UserField": {
+                "type": "object",
+                "properties": {}
+            },
+            "ReplyMessage": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/ObjectID"
+                    },
+                    "text": {
+                        "type": "string"
+                    },
+                    "created": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "sender": {
+                        "type": "object"
+                    },
+                    "richContent": {
+                        "$ref": "#/components/schemas/RichMessageContent"
+                    },
+                    "deleted": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            },
+            "Giphy": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "gif",
+                            "sticker"
+                        ]
+                    },
+                    "width": {
+                        "type": "number"
+                    },
+                    "height": {
+                        "type": "number"
+                    },
+                    "aspectRatio": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "width",
+                    "height",
+                    "aspectRatio"
+                ]
+            },
+            "Image": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "url"
+                ]
+            },
+            "Attachment": {
+                "type": "object",
+                "properties": {
+                    "link": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "pdf"
+                        ]
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "fileName": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "link",
+                    "type"
+                ]
+            },
+            "Set": {
+                "type": "object",
+                "properties": {}
+            },
+            "PollOption": {
+                "type": "object",
+                "properties": {
+                    "option": {
+                        "type": "string"
+                    },
+                    "votes": {
+                        "$ref": "#/components/schemas/Set"
+                    }
+                },
+                "required": [
+                    "option"
+                ]
+            },
+            "Poll": {
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "type": "string"
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PollOption"
+                        }
+                    },
+                    "allowMultipleAnswers": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "question",
+                    "options",
+                    "allowMultipleAnswers"
+                ]
+            },
+            "RichMessageContent": {
+                "type": "object",
+                "properties": {
+                    "reply": {
+                        "$ref": "#/components/schemas/ReplyMessage"
+                    },
+                    "giphy": {
+                        "$ref": "#/components/schemas/Giphy"
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Image"
+                        }
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Attachment"
+                        }
+                    },
+                    "poll": {
+                        "$ref": "#/components/schemas/Poll"
+                    }
+                }
+            },
+            "Reaction": {
+                "type": "object",
+                "properties": {}
+            },
+            "ChatMessage": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/ObjectID"
+                    },
+                    "text": {
+                        "type": "string"
+                    },
+                    "created": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "sender": {
+                        "$ref": "#/components/schemas/UserField"
+                    },
+                    "deleted": {
+                        "type": "boolean"
+                    },
+                    "resolved": {
+                        "type": "boolean"
+                    },
+                    "likes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ObjectID"
+                        }
+                    },
+                    "likesCount": {
+                        "type": "number"
+                    },
+                    "richContent": {
+                        "$ref": "#/components/schemas/RichMessageContent"
+                    },
+                    "reactions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Reaction"
+                        }
+                    },
+                    "isSenderBlocked": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "text",
+                    "created",
+                    "sender",
+                    "deleted",
+                    "resolved",
+                    "likes",
+                    "likesCount"
+                ]
+            },
+            "ChatConversation": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "unreadMessageCount": {
+                        "type": "number"
+                    },
+                    "lastMessage": {
+                        "$ref": "#/components/schemas/ChatMessage"
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            },
+            "DirectChatConversationDto": {
+                "type": "object",
+                "properties": {
+                    "product": {
+                        "type": "string"
+                    },
+                    "context": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Context"
+                        }
+                    },
+                    "userToConverseWith": {
+                        "type": "string"
+                    },
+                    "currentUserId": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "product",
+                    "context",
+                    "userToConverseWith",
+                    "currentUserId"
+                ]
+            },
+            "AddMemberDTO": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "string",
+                        "additionalProperties": false
+                    }
+                },
+                "required": [
+                    "userId"
+                ]
+            },
+            "ChatConversationModel": {
+                "type": "object",
+                "properties": {}
+            },
+            "BlockUserDTO": {
+                "type": "object",
+                "properties": {
+                    "conversationIds": {
+                        "description": "Ids of the conversations user has joined",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "memberId": {
+                        "type": "string",
+                        "description": "Id of the user"
+                    }
+                },
+                "required": [
+                    "conversationIds",
+                    "memberId"
+                ]
+            },
+            "MigratePermissionsDTO": {
+                "type": "object",
+                "properties": {
+                    "permissions": {
+                        "description": "Permissions Body",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Permission"
+                        }
+                    },
+                    "product": {
+                        "enum": [
+                            "community"
+                        ],
+                        "type": "string",
+                        "description": "Target Product - community/virtualEvent"
+                    },
+                    "conversationIds": {
+                        "description": "conversationIds list for those permission has to be updated",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "permissions",
+                    "product",
+                    "conversationIds"
+                ]
+            },
+            "BlockUserRequestDTO": {
+                "type": "object",
+                "properties": {
+                    "blocked_user": {
+                        "type": "string",
+                        "description": "Id of user which is blocked"
+                    },
+                    "blocker": {
+                        "type": "string",
+                        "description": "Id of target user against which user is blocked"
+                    },
+                    "set_blocked": {
+                        "type": "boolean",
+                        "description": "Event action type. True means block, false means unblock"
+                    },
+                    "blocker_type": {
+                        "type": "string",
+                        "enum": [
+                            "user"
+                        ],
+                        "description": "Entity whose access is blocked. Can be user only"
+                    }
+                },
+                "required": [
+                    "blocked_user",
+                    "blocker",
+                    "set_blocked",
+                    "blocker_type"
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,249 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+directive @key(fields: String!) on OBJECT | INTERFACE
+
+directive @extends on OBJECT | INTERFACE
+
+directive @external on OBJECT | FIELD_DEFINITION
+
+directive @requires(fields: String!) on FIELD_DEFINITION
+
+directive @provides(fields: String!) on FIELD_DEFINITION
+
+type Context {
+  id: String!
+  type: ContextType!
+}
+
+enum ContextType {
+  university
+  isDirectConversation
+  isNewsFeedConversation
+}
+
+type Reaction {
+  reaction: String!
+  reactionUnicode: String!
+  userIds: [String!]!
+}
+
+type ChatConversation {
+  id: ID!
+  unreadMessageCount: Int
+  lastMessage: ChatMessage
+  pinnedMessages: [ChatMessage!]!
+  pinnedMessagesCount: Int!
+}
+
+type UserField {
+  id: String
+}
+
+type ReplyMessage {
+  id: ObjectId!
+}
+
+"""ObjectId custom scalar type"""
+scalar ObjectId
+
+type Giphy {
+  id: String!
+  type: GifType!
+  width: Int!
+  height: Int!
+  aspectRatio: Float!
+}
+
+enum GifType {
+  Gif
+  Sticker
+}
+
+type Image {
+  url: String!
+}
+
+type Attachment {
+  link: String!
+  type: AttachmentType!
+  size: String
+  fileName: String
+}
+
+enum AttachmentType {
+  PDF
+}
+
+type PollOption {
+  option: String!
+  votes: [ObjectId!]!
+}
+
+type Poll {
+  question: String!
+  options: [PollOption!]!
+  allowMultipleAnswers: Boolean!
+}
+
+type RichMessageContent {
+  reply: ChatMessage
+  giphy: Giphy
+  images: [Image!]
+  attachments: [Attachment!]
+  poll: Poll
+}
+
+type ChatMessage {
+  id: ID!
+  text: String!
+  created: DateTime!
+  sender: UserField!
+  deleted: Boolean!
+  resolved: Boolean!
+  likes: [ObjectId!]!
+  likesCount: Int!
+  richContent: RichMessageContent
+  reactions: [Reaction!]
+  isSenderBlocked: Boolean
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type PaginatedChatMessages {
+  messages: [ChatMessage!]!
+  hasMore: Boolean!
+}
+
+type LastRead {
+  userId: String!
+  conversationId: String!
+  messageId: ObjectId!
+}
+
+type ConversationInbox {
+  """
+  The contexts the conversations on this entity belong to. We should not try to resolve this from the FE as this should be set explicitly on the specific inbox resolvers.
+  """
+  contexts: [Context!]!
+  conversations: [ChatConversation!]!
+}
+
+type Query {
+  getChatConversation(id: String!): ChatConversation!
+  getMessagesForChatConversation(getMessageDto: GetMessageDto!): [ChatMessage!]! @deprecated(reason: "This query has now been deprecated, please use getChatConversationMessages")
+  getChatConversationMessages(getMessageDto: GetMessageDto!): PaginatedChatMessages!
+  conversationInboxDoNotUse: [ConversationInbox!]! @deprecated(reason: "Do not use query. See implementation for more details.")
+}
+
+input GetMessageDto {
+  conversationId: ObjectId!
+  offsetId: ObjectId
+  limit: Int = 40
+}
+
+type Mutation {
+  recordLastMessageReadByUser(markReadMessageDto: MarkReadMessageDTO!): LastRead!
+  pinMessageInConversation(pinMessageDTO: pinMessageDTO!): ChatConversation!
+  unpinMessageInConversation(unpinMessageDTO: unpinMessageDTO!): ChatConversation!
+  sendConversationMessage(messageDto: MessageDto!): ChatMessage!
+  deleteConversationMessage(deleteMessageDto: DeleteMessageDto!): ChatMessage!
+  resolveConversationMessage(resolveMessageDto: ResolveMessageDto!): ChatMessage!
+  unresolveConversationMessage(resolveMessageDto: ResolveMessageDto!): ChatMessage!
+  likeConversationMessage(likeMessageDto: LikeMessageDto!): ChatMessage!
+  unlikeConversationMessage(likeMessageDto: LikeMessageDto!): ChatMessage!
+  addReactionToMessage(reactionDto: ReactionDto!): ChatMessage!
+  removeReactionFromMessage(reactionDto: ReactionDto!): ChatMessage!
+  addVote(option: String!, chatMessageId: ObjectId!): Poll!
+  removeVote(option: String!, chatMessageId: ObjectId!): Poll!
+}
+
+input MarkReadMessageDTO {
+  conversationId: ID!
+  messageId: ObjectId!
+}
+
+input pinMessageDTO {
+  messageId: ObjectId!
+  conversationId: String!
+}
+
+input unpinMessageDTO {
+  messageId: ObjectId!
+  conversationId: String!
+}
+
+input MessageDto {
+  text: String!
+  conversationId: ObjectId!
+  richContent: RichContentDto
+}
+
+input RichContentDto {
+  reply: ReplyMessageDto
+  giphy: GifDto
+  images: [ImageDto!]
+  attachments: [AttachmentDto!]
+  poll: PollDto
+}
+
+input ReplyMessageDto {
+  id: ObjectId!
+}
+
+input GifDto {
+  id: String!
+  type: GifType!
+  width: Int!
+  height: Int!
+  aspectRatio: Float!
+}
+
+input ImageDto {
+  url: String!
+}
+
+input AttachmentDto {
+  link: String!
+  type: AttachmentType!
+  size: String
+  fileName: String
+}
+
+input PollDto {
+  question: String!
+  options: [PollOptionDto!]!
+  allowMultipleAnswers: Boolean!
+}
+
+input PollOptionDto {
+  option: String!
+  votes: [ObjectId!] = []
+}
+
+input DeleteMessageDto {
+  conversationId: ObjectId!
+  messageId: ObjectId!
+}
+
+input ResolveMessageDto {
+  conversationId: ObjectId!
+  messageId: ObjectId!
+}
+
+input LikeMessageDto {
+  userId: ObjectId!
+  messageId: ObjectId!
+  conversationId: ObjectId!
+}
+
+input ReactionDto {
+  reaction: String!
+  reactionUnicode: String!
+  messageId: ObjectId!
+  conversationId: ObjectId!
+}
