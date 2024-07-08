@@ -129,7 +129,9 @@ export class MessageResolver {
     @Args('likeMessageDto') likeMessageDto: LikeMessageDto,
     @AuthenticatedUser() authenticatedUser: IAuthenticatedUser,
   ): Promise<ChatMessage> {
-    await this.messageLogic.like(likeMessageDto, authenticatedUser);
+    // likeConversationMessage function was expecting a promise (of type ChatMessage) to be returned 
+    // the code body was missing the return
+    return await this.messageLogic.like(likeMessageDto, authenticatedUser);
   }
 
   @Mutation(() => ChatMessage)
