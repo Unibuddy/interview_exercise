@@ -109,7 +109,7 @@ export default (): {
     serviceName: 'ub-chat-service',
   },
   cache: {
-    url: getEnv('REDIS_URL', 'localhost'),
+    url: getEnv('REDIS_URL', 'redis'),
     port: getEnvInt('REDIS_PORT', 6379),
     ttl: getEnvInt('CACHE_TTL', 300), // seconds
     name: getEnv('CACHE_NAME', 'chat-service'),

@@ -1,6 +1,17 @@
 version: '3.5'
 
 services:
+  app:
+    build:
+      context: .
+    environment:
+      JWT_SECRET_KEY: 'your_jwt_secret_key' 
+      API_KEY_FOR_CLIENT: 'your_api_key_for_client'
+      MONGO_CONNECTION_STRING: 'mongodb://localadmin:localadmin@interview_exercise-mongo-1:27017/unibuddy-chat-local?authSource=admin'
+      # Add other necessary environment variables here
+    ports:
+      - "3000:3000"  # Map port 3000 of the container to port 3000 on the host
+
   mock-user-service:
     image: mockserver/mockserver:mockserver-5.11.1
     ports:
@@ -41,4 +52,7 @@ services:
       - 6379:6379
     healthcheck:
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
  
