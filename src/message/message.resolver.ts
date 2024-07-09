@@ -123,13 +123,15 @@ export class MessageResolver {
     );
   }
 
+  // This function whose declared type is neither 'void' nor 'any' must return a value.
+  // Solution: Add return command.
   @Mutation(() => ChatMessage)
   @UseGuards(GqlAuthGuard)
   async likeConversationMessage(
     @Args('likeMessageDto') likeMessageDto: LikeMessageDto,
     @AuthenticatedUser() authenticatedUser: IAuthenticatedUser,
   ): Promise<ChatMessage> {
-    await this.messageLogic.like(likeMessageDto, authenticatedUser);
+    return await this.messageLogic.like(likeMessageDto, authenticatedUser);
   }
 
   @Mutation(() => ChatMessage)
