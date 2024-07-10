@@ -29,6 +29,14 @@ type Reaction {
   userIds: [String!]!
 }
 
+type ChatConversation {
+  id: ID!
+  unreadMessageCount: Int
+  lastMessage: ChatMessage
+  pinnedMessages: [ChatMessage!]!
+  pinnedMessagesCount: Int!
+}
+
 type UserField {
   id: String
 }
@@ -109,14 +117,6 @@ scalar DateTime
 type PaginatedChatMessages {
   messages: [ChatMessage!]!
   hasMore: Boolean!
-}
-
-type ChatConversation {
-  id: ID!
-  unreadMessageCount: Int
-  lastMessage: ChatMessage
-  pinnedMessages: [ChatMessage!]!
-  pinnedMessagesCount: Int!
 }
 
 type LastRead {

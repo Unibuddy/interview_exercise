@@ -9,6 +9,7 @@ export class ReplyMessage {
   @Prop()
   id: ObjectID;
 }
+
 @Schema()
 export class Giphy {
   @Prop()
@@ -153,6 +154,9 @@ export class ChatMessageModel {
     nullable: true,
   })
   reactions?: Reaction[];
+
+  @Prop({ type: [String], default: [] })
+  tags: string[]; // Add tags field here
 
   /**
    * All the properties below are virtual properties

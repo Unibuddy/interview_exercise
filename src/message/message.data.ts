@@ -42,7 +42,6 @@ export class MessageData {
     return chatMessageToObject(message);
   }
 
-
   async getChatConversationMessages(
     data: GetMessageDto,
   ): Promise<PaginatedChatMessages> {
@@ -87,24 +86,10 @@ export class MessageData {
     return { messages: result.map(chatMessageToObject), hasMore };
   }
 
-  /*
   async delete(messageId: ObjectID): Promise<ChatMessage> {
     // TODO allow a message to be marked as deleted
-    return new ChatMessage() // Minimum to pass ts checks -replace this
+    return new ChatMessage(); // Minimum to pass ts checks -replace this
   }
-*/
-
-async delete(messageId: ObjectID): Promise<ChatMessage> {
-  const message = await this.chatMessageModel.findByIdAndUpdate(
-    messageId,
-    { deleted: true },
-    { new: true },
-  );
-  if (!message) {
-    throw new Error('Message not found');
-  }
-  return chatMessageToObject(message);
-}
 
   async resolve(messageId: ObjectID): Promise<ChatMessage> {
     const filterBy = { _id: messageId };
@@ -371,5 +356,36 @@ async delete(messageId: ObjectID): Promise<ChatMessage> {
     }
 
     return chatMessageToObject(updatedResult);
+  }
+
+  async addTags(messageId: ObjectID, tags: string[]): Promise<ChatMessage> {
+    const updatedResult = await this.chatMessageModel.findOneAndUpdate(
+      { _id: messageId },
+      { $addToSet: { tags: { $each: tags } } },
+      { new: true, returnOriginal: false },
+    );
+    if (!updatedResult) {
+      throw new Error(`Failed to add tags to messageId: ${messageId.toHexString()}`);
+    }
+    return chatMessageToObject(updatedResult);
+  }
+
+  async updateTags(messageId: ObjectID, tags: string[]): Promise<ChatMessage> {
+    const updatedResult = await this.chatMessageModel.findOneAndUpdate(
+      { _id: messageId },
+      { tags: tags },
+      { new: true, returnOriginal: false },
+    );
+    if (!updatedResult) {
+      throw new Error(`Failed to update tags for messageId: ${messageId.toHexString()}`);
+    }
+    return chatMessageToObject(updatedResult);
+  }
+
+  async findMessagesByTags(tags: string[]): Promise<ChatMessage[]> {
+    const chatMessages = await this.chatMessageModel.find({
+      tags: { $in: tags },
+    });
+    return chatMessages.map((chatMessage) => chatMessageToObject(chatMessage));
   }
 }

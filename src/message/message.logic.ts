@@ -64,6 +64,20 @@ export interface IMessageLogic {
   getMessagesByConversation(
     messagesFilterInput: MessagesFilterInput,
   ): Promise<MessageGroupedByConversationOutput[]>;
+  addTagsToMessage(
+    messageId: ObjectID,
+    tags: string[],
+    authenticatedUser: IAuthenticatedUser,
+  ): Promise<ChatMessage>;
+  updateMessageTags(
+    messageId: ObjectID,
+    tags: string[],
+    authenticatedUser: IAuthenticatedUser,
+  ): Promise<ChatMessage>;
+  findMessagesByTags(
+    tags: string[],
+    authenticatedUser: IAuthenticatedUser,
+  ): Promise<ChatMessage[]>;
 }
 
 @Injectable()
@@ -278,7 +292,6 @@ export class MessageLogic implements IMessageLogic {
     return blockedUsers.map((user) => user.blockedUserId);
   }
 
-
   async getChatConversationMessages(
     getMessageDto: GetMessageDto,
     authenticatedUser: IAuthenticatedUser,
@@ -313,7 +326,6 @@ export class MessageLogic implements IMessageLogic {
       paginatedChatMessages,
       blockedUserIds,
     );
-  
 
     return paginatedChatMessages;
   }
@@ -652,49 +664,93 @@ export class MessageLogic implements IMessageLogic {
       );
     }
 
-    // Check if user is trying to remove vote for the same option again
-    if (pollOption.votes) {
-      const votes = new Set();
-      pollOption.votes.forEach((vote) => {
-        votes.add(vote.toHexString());
-      });
-
-      const hasUserVoted = votes.has(authenticatedUser.userId.toHexString());
-
-      if (!hasUserVoted) {
-        throw new Error(
-          `Unable to remove your vote from an option you haven't voted for`,
-        );
+       // Check if user is trying to remove vote for the same option again
+       if (pollOption.votes) {
+        const votes = new Set();
+        pollOption.votes.forEach((vote) => {
+          votes.add(vote.toHexString());
+        });
+  
+        const hasUserVoted = votes.has(authenticatedUser.userId.toHexString());
+  
+        if (!hasUserVoted) {
+          throw new Error(
+            `Unable to remove your vote from an option you haven't voted for`,
+          );
+        }
       }
+  
+      return await this.messageData.removeVote(
+        chatMessageId,
+        authenticatedUser.userId,
+        option,
+      );
     }
-
-    return await this.messageData.removeVote(
-      chatMessageId,
-      authenticatedUser.userId,
-      option,
-    );
+  
+    private validateOption(
+      message: ChatMessageModel,
+      option: string,
+    ): PollOption {
+      // Get the option index for input Option
+      const optionIndex = message.richContent?.poll?.options.findIndex(
+        (pollOption) => pollOption.option === option,
+      );
+  
+      if (optionIndex === -1 || optionIndex === undefined) {
+        throw new Error(`Option "${option}" not found in the poll`);
+      }
+  
+      // Get the poll option which has {option and votes}
+      const pollOption = message.richContent?.poll?.options[optionIndex];
+  
+      if (!pollOption) {
+        throw new Error(`Option "${option}" not found in the poll`);
+      }
+  
+      return pollOption;
+    }
+  
+    async addTagsToMessage(
+      messageId: ObjectID,
+      tags: string[],
+      authenticatedUser: IAuthenticatedUser,
+    ): Promise<ChatMessage> {
+      await this.throwForbiddenErrorIfNotAuthorized(
+        authenticatedUser,
+        messageId,
+        Action.updateMessage, // Ensure the user has permission to update the message
+      );
+  
+      const message = await this.messageData.addTags(messageId, tags);
+  
+      // Here you can emit an event if needed
+  
+      return message;
+    }
+  
+    async updateMessageTags(
+      messageId: ObjectID,
+      tags: string[],
+      authenticatedUser: IAuthenticatedUser,
+    ): Promise<ChatMessage> {
+      await this.throwForbiddenErrorIfNotAuthorized(
+        authenticatedUser,
+        messageId,
+        Action.updateMessage, // Ensure the user has permission to update the message
+      );
+  
+      const message = await this.messageData.updateTags(messageId, tags);
+  
+      // Here you can emit an event if needed
+  
+      return message;
+    }
+  
+    async findMessagesByTags(
+      tags: string[],
+      authenticatedUser: IAuthenticatedUser,
+    ): Promise<ChatMessage[]> {
+      return await this.messageData.findMessagesByTags(tags);
+    }
   }
-
-  private validateOption(
-    message: ChatMessageModel,
-    option: string,
-  ): PollOption {
-    // Get the option index for input Option
-    const optionIndex = message.richContent?.poll?.options.findIndex(
-      (pollOption) => pollOption.option === option,
-    );
-
-    if (optionIndex === -1 || optionIndex === undefined) {
-      throw new Error(`Option "${option}" not found in the poll`);
-    }
-
-    // Get the poll option which has {option and votes}
-    const pollOption = message.richContent?.poll?.options[optionIndex];
-
-    if (!pollOption) {
-      throw new Error(`Option "${option}" not found in the poll`);
-    }
-
-    return pollOption;
-  }
-}
+  
