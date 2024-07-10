@@ -35,6 +35,7 @@ import { UserBlocksModule } from './user-blocks/user-blocks.module';
       inject: [ConfigurationManager],
       useFactory: (configurationManager: ConfigurationManager) => {
         const databaseConfig = configurationManager.getConfiguration().database;
+        console.log(`MongoDB connected, ${databaseConfig.connectionString}`)
         return {
           uri: databaseConfig.connectionString,
         };

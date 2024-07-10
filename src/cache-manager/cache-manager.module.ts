@@ -14,8 +14,7 @@ import { UserCacheManagerService } from './user-cache-manager.service';
         if (!config) throw new Error('Could not find cache config');
         return {
           store: redisStore as CacheStoreFactory,
-          host: config.url,
-          port: config.port,
+          url: config.url,
           max: config.maxItems,
         };
       },

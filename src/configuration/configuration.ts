@@ -81,7 +81,6 @@ export interface IUserServiceConfig {
 
 export interface ICacheManagerConfig {
   url: string;
-  port: number;
   ttl: number;
   name: string;
   maxItems: number;
@@ -109,8 +108,7 @@ export default (): {
     serviceName: 'ub-chat-service',
   },
   cache: {
-    url: getEnv('REDIS_URL', 'redis'),
-    port: getEnvInt('REDIS_PORT', 6379),
+    url: getEnv('REDIS_URL', 'redis://redis:6379'),
     ttl: getEnvInt('CACHE_TTL', 300), // seconds
     name: getEnv('CACHE_NAME', 'chat-service'),
     maxItems: getEnvInt('CACHE_MAX_ITEMS', 20000),
