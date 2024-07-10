@@ -122,6 +122,10 @@ describe('MessageData', () => {
       // And that it is now deleted
       const deletedMessage = await messageData.delete(new ObjectID(message.id));
       expect(deletedMessage.deleted).toEqual(true);
+
+      // And that is it now deleted
+      const retrievedMessage = await messageData.getMessage(message.id.toHexString())
+      expect(retrievedMessage.deleted).toEqual(true);
     });
   });
 });

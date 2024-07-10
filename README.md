@@ -70,7 +70,7 @@ The service fails to start - ```npm run start:dev``` -  Use the messages to fix 
 
 ## Part 2
 
-A test is failing - ```npm run test``` - impolement the code necessary to pass the test
+A test is failing - ```npm run test``` - implement the code necessary to pass the test
 
 ## Part 3 - Strech
 
