@@ -68,9 +68,19 @@ We encourage pair programming, but do want the exercise to be fair, so please ma
 
 The service fails to start - ```npm run start:dev``` -  Use the messages to fix the code, so that the service runs successfully
 
+## Solution Explaination
+
+When I first ran the ```npm run start: dev``` - it ran into an error on line 131.
+
+![Screenshot 2024-07-08 143835](https://github.com/horiaomar25/TheMealApp/assets/140801006/a5dcacba-ee61-4f6f-aedf-86360aa1dbfd)
+
+To resolve this, it meant that function was missing a expilict return statement. 
+
 ## Part 2
 
 A test is failing - ```npm run test``` - impolement the code necessary to pass the test
+
+I was able to resolve this by adjusting the delelete function in message.data.ts.  
 
 ## Part 3 - Strech
 
