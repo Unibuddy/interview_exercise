@@ -68,7 +68,7 @@ We encourage pair programming, but do want the exercise to be fair, so please ma
 
 The service fails to start - ```npm run start:dev``` -  Use the messages to fix the code, so that the service runs successfully
 
-## Solution Explaination
+## Solution Explanation
 
 When I first ran the ```npm run start: dev``` - it ran into an error on line 131.
 
@@ -96,82 +96,80 @@ We'd love to hear about
 * How you would go about testing
 * What you might do differently
 
-# Additional
-The following docs are from the live service repo. You may find them helpful. 
+# Implementation
 
+### 1. Adding Tags to a single message
 
-# development
-$ npm run start:dev
-```
-
-You are now able to make requests to the api.
-There are two interfaces; a [rest interface](http://localhost:3000/api), and a [graphql interface](http://localhost:3000/graphql).
-
-
-The rest interface allows a client to set up a new conversation, and to manage who has access to it.
-
-The graphql interface allows users to send and recieve messages in the conversations that they are in.
-
-
-You can create a conversation through the [Swagger UI](http://localhost:3000/api) to attain a conversationId (to use with the graphql end points). Some of the requests require authorization. Select the `Authorize` button (top right of the screen) and enter the key `ssssh`. To create a conversation select `Try it out` in POST /conversation.
-
-## Structure
-
-The code in each module is separated into 3 layers
-1) controllers and/or resolvers: These provide the external interfaces for the REST and Graphql interfaces respectively, and passes the request to the logic layer
-2) logic: This implements common business rules, and can make requests to other modules and the repository layer to fulfil the request.
-3) repository: This manages hwo data is stored in the module. It should only be used directly by the logic layer.
-
-
-my-app/
-├─ src/                             
-│  ├─ example-graphql/              # Example module
-│    ├─ example-graphql.module.ts
-│    ├─ example-graphql.repository.spec.ts
-│    ├─ example-graphql.repository.ts --------- Controls how the data is stored
-│    ├─ example-graphql.resolver.spec.ts
-│    ├─ example-graphql.resolver.ts ----------- Provides the external interface for the service
-│    ├─ example-graphql.logic.spec.ts
-│    ├─ example-graphql.logic.ts -------------- Implements common business logic
-│  ├─ app.module.ts
-│  ├─ main.ts
-
-## Testing
-
-- Unit test file of each file is created in the same path under name of <fileName>.spec.ts
-- E2e tests are in test folder
-- Jest is used for creating these tests.
-
-To run the unit tests you wil need to have the databases running - run `docker compose up -d`
-
-```bash
-# unit tests
-$ npm run test
-$ npm run test:watch
-
-# e2e tests - the service needs to be running - see Running the app
-$ npm run test:e2e
-$ npm run test:e2e:watch
+To handle adding tags to a single message, I looked into the ```message/models``` folder. In the ```message.model.ts``` file, there is a ```ChatMessageModel``` Schema. The ```ChatMessageModel``` Schema defines the core properites of a chat message. Adding the ```tags``` property will hold an array of strings representing tag IDs.
 
 ```
+@Prop({ type[String] })
+tags?: string[];
+```
+This addition allows each chat message to have an optional ```tags``` property if the sender chooses to add them to their message. 
 
-
-## Mocking the unibuddy_api end point (e.g /api/v1/users/)
-
-You may want to mock data from the ub_internal_api end points. We can do this using [Mock Server](https://www.mock-server.com/)
-
-
-For `/api/v1/users/{$userId}` an example would be 
-
-url: /api/v1/users/599ebd736a1d100004aeb744
+The next step I would then take is to go the ```message.data.ts``` and modify the ```createMessage``` function. In this function, I will add the tags property to handle tags data if provided.Following the exsisting structure of other properties in the function, I can add the `tags` property as follows:
 
 ```
-{
-"account_role": "university",
-"email": "edinburgh+admin@unibuddy.co",
-"first_name": "Uni",
-"id": "599ebd736a1d100004aeb744",
-"last_name": "Admin",
-"profile_photo": null
+chatMessage.tags = tags?[]: string[] || []
+```
+This should enable to adding of tags when a sender write a message. 
+
+### 2. Updating Tags on single message
+
+Exploring the ```message.data.ts``` file, I saw the resolver function that seems to deal with the status of a message to resolved. This function follows updating the logic of the message. I would follow similiar structure in the dealing updating tag on a single message.
+
+In the ```message.data.ts``` I would add a ```updateMessageTags``` function to apply this functionality.
+
+```
+async updateTags(messageId: ObjectID, updatedTags: string[]): Promise<ChatMessage>{
+    const filterBy = { _id: messageId };
+    const updateProperty = { $set: {tags: [...updatedTags] } };
+    const updatedResult = await this.chatMessageModel.findOneAndUpdate(
+        filterBy, updatedProperty,
+        {new: true, returnOriginal: false}
+    );
+
+    if(!updatedResult) {
+        throw new Error('Failed to update tags for message:' $messageId);
+    }
+
+    return chatMessageToObject(updatedResult);
 }
 ```
+I would use mongoDB ```$set``` operator and ES6 spread operator as we are dealing with a array of tags. So when we update the tags, it will stick return the exsisting tags that may be associated with the message as well as the update tag. 
+
+Overall, this should deal with the ability to update tags on a single message. 
+
+### 3. Finding Messages
+
+I would also implement this in the ```message.data.ts```. In order to filter through the tags with search we need a query. To do this, I looked into MongoDB documentation [here](https://mongoosejs.com/docs/queries.html). In looking through this documentation I would use ```Model.find``` to filter and use ```$in``` to search for messages where the tags array contains at least one of the provided tags in the search query.
+
+```
+async function findMessagesByTags(tags: string[]): Promise<ChatMessage[]> {
+  return this.chatMessageModel.find({ tags: { $in: tags } });
+}
+```
+
+### 4. What problems you might encounter
+
+1. Adding a new tags property might require a migration, potentially causing downtime or data inconsistencies.
+
+2. Filtering through a large dataset especially with tags now added to single messages rather than just at the beginning of the creation of the conversation.
+
+### 5. Testing
+
+1. In ```message.data.spec.ts```, I would test if tags are provided in a single message. 
+
+2. I would also test if the tags are updated using mock data. 
+
+### 6. What you might do differently
+ 
+ I would perphaps consider create a seperate file to deal with tag management so I could later extend of perphap deleting tags. 
+ 
+ This may easier for readability, maintainability, and future extensibility.
+
+### Submission
+@davidbebb
+@RichUnibuddy
+@anlauren
