@@ -130,8 +130,9 @@ export class MessageResolver {
     @AuthenticatedUser() authenticatedUser: IAuthenticatedUser,
   ): Promise<ChatMessage> {
     await this.messageLogic.like(likeMessageDto, authenticatedUser);
+    return await this.messageLogic.getMessage(likeMessageDto.messageId, authenticatedUser);
   }
-
+  
   @Mutation(() => ChatMessage)
   @UseGuards(GqlAuthGuard)
   async unlikeConversationMessage(

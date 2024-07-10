@@ -70,7 +70,7 @@ describe('MessageResolver', () => {
     }
   }
 
-  class MockedChatMessageLogic implements IMessageLogic {
+  /*class MockedChatMessageLogic implements IMessageLogic {
     resolve(
       resolveMessageDto: ResolveMessageDto,
       authenticatedUser?: IAuthenticatedUser,
@@ -195,7 +195,139 @@ describe('MessageResolver', () => {
     ): Promise<MessageGroupedByConversationOutput[]> {
       return Promise.resolve([]);
     }
-  }
+  }*/
+
+    class MockedChatMessageLogic implements IMessageLogic {
+      resolve(
+        resolveMessageDto: ResolveMessageDto,
+        authenticatedUser?: IAuthenticatedUser,
+      ): Promise<ChatMessage> {
+        return Promise.resolve(chatMessage);
+      }
+    
+      unresolve(
+        unresolveMessageDto: ResolveMessageDto,
+        authenticatedUser?: IAuthenticatedUser,
+      ): Promise<ChatMessage> {
+        return Promise.resolve(chatMessage);
+      }
+    
+      like(
+        likeMessageDto: LikeMessageDto,
+        authenticatedUser?: IAuthenticatedUser,
+      ): Promise<ChatMessage> {
+        return Promise.resolve(chatMessage);
+      }
+    
+      unlike(
+        unlikeMessageDto: LikeMessageDto,
+        authenticatedUser?: IAuthenticatedUser,
+      ): Promise<ChatMessage> {
+        return Promise.resolve(chatMessage);
+      }
+    
+      create(
+        messageDto: MessageDto,
+        authenticatedUser?: IAuthenticatedUser,
+      ): Promise<ChatMessage> {
+        return Promise.resolve({
+          ...chatMessage,
+          text: messageDto.text,
+        });
+      }
+    
+      delete(
+        messageDto: DeleteMessageDto,
+        authenticatedUser?: IAuthenticatedUser,
+      ): Promise<ChatMessage> {
+        return Promise.resolve(chatMessage);
+      }
+    
+      getChatConversationMessages(
+        getMessageDto: GetMessageDto,
+        authenticatedUser?: IAuthenticatedUser,
+      ): Promise<PaginatedChatMessages> {
+        let chatMessage: ChatMessage[] = [];
+        if (getMessageDto.conversationId === conversationId) {
+          chatMessage = [
+            {
+              deleted: false,
+              resolved: false,
+              likes: [],
+              likesCount: 0,
+              created: new Date('2020-12-31'),
+              id,
+              text: 'a chat message',
+              sender: { id: senderId.toHexString() },
+            },
+          ];
+        }
+        if (getMessageDto.conversationId === emptyRichContentConversationId) {
+          chatMessage = [
+            {
+              deleted: false,
+              resolved: false,
+              likes: [],
+              likesCount: 0,
+              created: new Date('2020-12-31'),
+              id,
+              text: 'a chat message',
+              sender: { id: senderId.toHexString() },
+              richContent: {},
+            },
+          ];
+        }
+        if (getMessageDto.conversationId === replyRichContentConversationId) {
+          chatMessage = [
+            {
+              deleted: false,
+              resolved: false,
+              likes: [],
+              likesCount: 0,
+              created: new Date('2020-12-31'),
+              id,
+              text: 'a reply message',
+              sender: { id: senderId.toHexString() },
+              richContent: {
+                reply: {
+                  id: replyMessageId,
+                },
+              },
+            },
+          ];
+        }
+    
+        return Promise.resolve({
+          messages: chatMessage,
+          hasMore: false,
+        });
+      }
+    
+      addReactionToMessage(
+        reactionDto: ReactionDto,
+        authenticatedUser?: IAuthenticatedUser,
+      ): Promise<ChatMessage> {
+        return Promise.resolve(chatMessage);
+      }
+    
+      removeReactionFromMessage(
+        reactionDto: ReactionDto,
+        authenticatedUser?: IAuthenticatedUser,
+      ): Promise<ChatMessage> {
+        return Promise.resolve(chatMessage);
+      }
+    
+      getMessagesByConversation(
+        messagesFilterInput: MessagesFilterInput,
+      ): Promise<MessageGroupedByConversationOutput[]> {
+        return Promise.resolve([]);
+      }
+    
+      getMessage(messageId: ObjectID, authenticatedUser?: IAuthenticatedUser): Promise<ChatMessage> {
+        return Promise.resolve(chatMessage);
+      }
+    }
+    
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

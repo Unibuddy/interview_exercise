@@ -113,13 +113,13 @@ describe('MessageData', () => {
       const conversationId = new ObjectID();
       const message = await messageData.create(
         { conversationId, text: 'Message to delete' },
-        senderId,
+        new ObjectID(),
       );
 
       // Make sure that it started off as not deleted
       expect(message.deleted).toEqual(false);
 
-      // And that is it now deleted
+      // And that it is now deleted
       const deletedMessage = await messageData.delete(new ObjectID(message.id));
       expect(deletedMessage.deleted).toEqual(true);
     });
