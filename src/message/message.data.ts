@@ -374,4 +374,23 @@ export class MessageData {
 
     return chatMessageToObject(updatedResult);
   }
+  async addOrUpdateTags(messageId: ObjectID, tags: string[]): Promise<ChatMessageModel> {
+    const message = await this.chatMessageModel.findByIdAndUpdate(
+      messageId,
+      { tags: tags },
+      { new: true }
+    );
+    if (!message) throw new Error('Message not found');
+    return chatMessageToObject(message);
+  }
+
+  async getMessagesByTags(tags: string[], limit: number, offset: number): Promise<PaginatedChatMessages> {
+    const messages = await this.chatMessageModel
+      .find({ tags: { $in: tags } })
+      .skip(offset)
+      .limit(limit)
+      .sort({ _id: -1 });
+    const hasMore = messages.length === limit;
+    return { messages: messages.map(chatMessageToObject), hasMore };
+  }
 }

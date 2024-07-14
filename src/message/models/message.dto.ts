@@ -177,3 +177,23 @@ export class ReactionDto {
   @Field(() => ObjectID)
   conversationId: ObjectID;
 }
+@InputType()
+export class UpdateTagsDto {
+  @Field(() => ObjectID)
+  messageId: ObjectID;
+
+  @Field(() => [String])
+  tags: string[];
+}
+
+@InputType()
+export class GetMessagesByTagsDto {
+  @Field(() => [String])
+  tags: string[];
+
+  @Field({ defaultValue: 40 })
+  limit: number;
+
+  @Field({ defaultValue: 0 })
+  offset: number;
+}

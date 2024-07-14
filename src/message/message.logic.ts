@@ -13,6 +13,8 @@ import {
   ResolveMessageDto,
   ReactionDto,
   PollOptionDto,
+  UpdateTagsDto,
+  GetMessagesByTagsDto,
 } from './models/message.dto';
 import { MessageData } from './message.data';
 import { IAuthenticatedUser } from '../authentication/jwt.strategy';
@@ -696,5 +698,16 @@ export class MessageLogic implements IMessageLogic {
     }
 
     return pollOption;
+  }
+  async addOrUpdateTags(
+    updateTagsDto: UpdateTagsDto,
+    authenticatedUser: IAuthenticatedUser,
+  ): Promise<ChatMessage> {
+    const message = await this.messageData.addOrUpdateTags(updateTagsDto.messageId, updateTagsDto.tags);
+    return message;
+  }
+
+  async getMessagesByTags(getMessagesByTagsDto: GetMessagesByTagsDto): Promise<PaginatedChatMessages> {
+    return this.messageData.getMessagesByTags(getMessagesByTagsDto.tags, getMessagesByTagsDto.limit, getMessagesByTagsDto.offset);
   }
 }
