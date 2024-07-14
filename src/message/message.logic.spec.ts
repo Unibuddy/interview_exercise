@@ -132,6 +132,26 @@ const replyMessageModel: ChatMessageModel = {
   resolved: false,
   likes: [],
   likesCount: 0,
+  tags: [],
+};
+
+const addTagModel: ChatMessageModel = {
+  id: new ObjectID(replyMessageId),
+  text: 'test',
+  created,
+  sender: {
+    id: senderId.toHexString(),
+  },
+  senderId,
+  conversationId,
+  conversation: {
+    id: conversationId.toHexString(),
+  },
+  deleted: false,
+  resolved: false,
+  likes: [],
+  likesCount: 0,
+  tags: ["cool", "sports"],
 };
 
 const USER_BLOCK_DTO = {
@@ -162,6 +182,7 @@ describe('MessageLogic', () => {
     resolved: false,
     likes: [],
     likesCount: 0,
+    tags: [],
   };
 
   const mockGifMessage = {
@@ -191,6 +212,7 @@ describe('MessageLogic', () => {
     deleted: false,
     resolved: false,
     likes: [],
+    tags: [],
     likesCount: 0,
     richContent: {
       reply: {
@@ -338,6 +360,7 @@ describe('MessageLogic', () => {
           likes: [],
           likesCount: 0,
           isSenderBlocked: false,
+          tags: [],
         },
 
         {
@@ -354,6 +377,7 @@ describe('MessageLogic', () => {
           likes: [],
           likesCount: 0,
           isSenderBlocked: false,
+          tags: [],
         },
       ];
 
@@ -615,7 +639,10 @@ describe('MessageLogic', () => {
     it('can create a new message with pusher implementation', async () => {
       jest.spyOn(messageData, 'create');
       await messageLogic.create(
-        { text: 'This is my message text', conversationId },
+        {
+          text: 'This is my message text', conversationId,
+          tags: [],
+        },
         { ...validUser, userId: senderId },
       );
 
@@ -633,6 +660,7 @@ describe('MessageLogic', () => {
         likes: [],
         likesCount: 0,
         isSenderBlocked: false,
+        tags: [],
       });
 
       expect(safeguardingService.clean).toHaveBeenCalledTimes(1);
@@ -653,6 +681,7 @@ describe('MessageLogic', () => {
           text: 'replying',
           conversationId,
           richContent: { reply: { id: messageId } },
+          tags: [],
         },
         { ...validUser, userId: senderIdTwo },
       );
@@ -684,6 +713,7 @@ describe('MessageLogic', () => {
           },
         },
         isSenderBlocked: false,
+        tags: [],
       });
 
       expect(safeguardingService.clean).toBeCalledTimes(2);
@@ -710,6 +740,7 @@ describe('MessageLogic', () => {
           text: 'gif',
           conversationId,
           richContent: mockGiphyContent,
+          tags: [],
         },
         { ...validUser, userId: senderIdTwo },
       );
@@ -737,6 +768,7 @@ describe('MessageLogic', () => {
           },
         },
         isSenderBlocked: false,
+        tags: [],
       });
 
       expect(safeguardingService.clean).toBeCalledTimes(1);
@@ -765,6 +797,7 @@ describe('MessageLogic', () => {
           richContent: {
             images: mockImages,
           },
+          tags: [],
         },
         { ...validUser, userId: senderIdTwo },
       );
@@ -786,6 +819,7 @@ describe('MessageLogic', () => {
           images: mockImages,
         },
         isSenderBlocked: false,
+        tags: [],
       });
 
       expect(conversationChannel.send).toHaveBeenCalledWith(
@@ -814,6 +848,7 @@ describe('MessageLogic', () => {
           richContent: {
             attachments: mockAttachments,
           },
+          tags: [],
         },
         { ...validUser, userId: senderIdTwo },
       );
@@ -835,6 +870,7 @@ describe('MessageLogic', () => {
           attachments: mockAttachments,
         },
         isSenderBlocked: false,
+        tags: [],
       });
 
       expect(conversationChannel.send).toHaveBeenCalledWith(
@@ -863,6 +899,7 @@ describe('MessageLogic', () => {
           richContent: {
             poll: mockPoll,
           },
+          tags: [],
         },
         { ...validUser, userId: senderIdTwo },
       );
@@ -884,6 +921,7 @@ describe('MessageLogic', () => {
           poll: mockPoll,
         },
         isSenderBlocked: false,
+        tags: [],
       });
 
       expect(conversationChannel.send).toHaveBeenCalledWith(
@@ -930,6 +968,7 @@ describe('MessageLogic', () => {
             richContent: {
               poll: mockPoll,
             },
+            tags: []
           },
           { ...invalidUser, userId: senderIdTwo },
         ),
@@ -955,6 +994,7 @@ describe('MessageLogic', () => {
           text: 'gif',
           conversationId,
           richContent: mockGiphyContent,
+          tags: [],
         },
         { ...validUser, userId: senderIdTwo },
       );
@@ -964,6 +1004,7 @@ describe('MessageLogic', () => {
           text: 'replying',
           conversationId,
           richContent: { reply: { id: giphyMessage.id } },
+          tags: [],
         },
         { ...validUser, userId: senderIdTwo },
       );
@@ -996,6 +1037,7 @@ describe('MessageLogic', () => {
           },
         },
         isSenderBlocked: false,
+        tags: [],
       });
 
       expect(safeguardingService.clean).toBeCalledTimes(3);
@@ -1018,7 +1060,10 @@ describe('MessageLogic', () => {
 
     it('can create a new message with kafka implementation', async () => {
       await messageLogic.create(
-        { text: 'This is my message text', conversationId },
+        {
+          text: 'This is my message text', conversationId,
+          tags: [],
+        },
         {
           ...validUser,
           userId: senderId,
@@ -1029,7 +1074,10 @@ describe('MessageLogic', () => {
     it('updates conversation with last messageId while creating a message', async () => {
       jest.spyOn(conversationData, 'updateConversationWithLastMessage');
       const createdMessage = await messageLogic.create(
-        { text: 'This is my message text', conversationId },
+        {
+          text: 'This is my message text', conversationId,
+          tags: [],
+        },
         validUser,
       );
       expect(
@@ -1040,7 +1088,10 @@ describe('MessageLogic', () => {
     it('registers last read for current user while creating the message', async () => {
       jest.spyOn(conversationData, 'recordLastMessageReadByUser');
       const createdMessage = await messageLogic.create(
-        { text: 'This is another message', conversationId },
+        {
+          text: 'This is another message', conversationId,
+          tags: [],
+        },
         validUser,
       );
       expect(conversationData.recordLastMessageReadByUser).toHaveBeenCalledWith(

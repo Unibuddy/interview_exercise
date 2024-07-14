@@ -306,6 +306,87 @@
                 ]
             }
         },
+        "/conversation/{conversationId}/addtags": {
+            "post": {
+                "operationId": "ConversationController_addTagsToMessage",
+                "parameters": [
+                    {
+                        "name": "conversationId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Tag"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatConversation"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
+        "/conversation/{conversationId}/searchtags": {
+            "post": {
+                "operationId": "ConversationController_searchTagsInMessage",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Tag"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatConversation"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "X-API-KEY": []
+                    }
+                ]
+            }
+        },
         "/conversation/{conversationId}/member": {
             "post": {
                 "operationId": "ConversationController_addMember",
@@ -979,6 +1060,12 @@
                     },
                     "isSenderBlocked": {
                         "type": "boolean"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "required": [

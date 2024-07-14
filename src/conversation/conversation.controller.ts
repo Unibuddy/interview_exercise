@@ -83,6 +83,27 @@ export class ConversationController {
     return this.conversationLogic.updateTags(conversationId, tags);
   }
 
+  @Post(':conversationId/addtags')
+  @ApiSecurity('X-API-KEY')
+  @UseGuards(XApiKeyGuard)
+  @ApiBody({ type: [Tag] })
+  async addTagsToMessage(
+    @Param('conversationId') conversationId: string,
+    @Body() tags: Tag[],
+  ): Promise<ChatConversation> {
+    return this.conversationLogic.addTagsInMessage(conversationId, tags);
+  }
+
+  @Post(':conversationId/searchtags')
+  @ApiSecurity('X-API-KEY')
+  @UseGuards(XApiKeyGuard)
+  @ApiBody({ type: [Tag] })
+  async searchTagsInMessage(
+    @Body() tags: Tag[],
+  ): Promise<ChatConversation> {
+    return this.conversationLogic.searchTagsInMessage(tags);
+  }
+
   @Post(':conversationId/member')
   @ApiSecurity('X-API-KEY')
   addMember(

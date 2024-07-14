@@ -97,6 +97,7 @@ export class RichMessageContent {
     type: Poll,
   })
   poll?: Poll;
+  
 }
 
 @Schema()
@@ -121,6 +122,9 @@ export class ChatMessageModel {
 
   @Prop()
   text: string;
+
+  @Prop()
+  tags: string[];
 
   @Prop({ required: true, type: () => Date })
   created: Date;

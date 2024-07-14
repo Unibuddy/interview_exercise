@@ -108,6 +108,7 @@ export class RichContentDto {
   poll?: PollDto;
 }
 
+
 @InputType()
 export class MessageDto {
   @Field()
@@ -118,6 +119,9 @@ export class MessageDto {
 
   @Field(() => RichContentDto, { nullable: true })
   richContent?: RichContentDto;
+
+  @Field(() => [String], { nullable: true, defaultValue: [] })
+  tags: string[]
 }
 
 // TODO Min - Max on limit
@@ -176,4 +180,28 @@ export class ReactionDto {
 
   @Field(() => ObjectID)
   conversationId: ObjectID;
+}
+
+@InputType()
+export class UpdateTagsMessageDto {
+  @Field(() => ObjectID)
+  messageId: ObjectID;
+  
+  @Field(() => String, {nullable: true})
+  tags: string[];
+}
+
+@InputType()
+export class addTagsMessageDto {
+  @Field(() => ObjectID)
+  messageId: ObjectID;
+  
+  @Field(() => String, {nullable: true})
+  tags: string[];
+}
+
+@InputType()
+export class searchTagsMessageDto {
+  @Field(() => String, {nullable: true})
+  tags: string[];
 }

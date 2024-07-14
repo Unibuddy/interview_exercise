@@ -29,6 +29,7 @@ export class MessageData {
     chatMessage.conversationId = data.conversationId;
     chatMessage.created = new Date();
     chatMessage.deleted = false;
+    chatMessage.tags = data.tags;
 
     createRichContent(data, chatMessage);
 
@@ -95,8 +96,8 @@ export class MessageData {
         throw new Error('The message to resolved does not exist');
       }
     resolved.deleted = true;
-    await resolved.save()
-    return chatMessageToObject(resolved)
+    await resolved.save();
+    return chatMessageToObject(resolved);
   }
 
   async resolve(messageId: ObjectID): Promise<ChatMessage> {
@@ -364,5 +365,36 @@ export class MessageData {
     }
 
     return chatMessageToObject(updatedResult);
+  }
+
+  async updateTags(messageId: ObjectID, tags: string[]): Promise<ChatMessage>{
+
+    const message = await this.chatMessageModel.findById(messageId);
+    if (!message){ 
+      throw new Error(`The message for ${messageId} doesnot exist`);
+    }
+    message.tags = tags;
+    await message.save();
+    return chatMessageToObject(message);
+  }
+
+  async addTags(messageId: ObjectID, tags: string[]): Promise<ChatMessage>{
+
+    const message = await this.chatMessageModel.findById(messageId);
+    if (!message){ 
+      throw new Error(`The message for ${messageId} doesnot exist`);
+    }
+    message.tags.push(...tags);
+    await message.save();
+    return chatMessageToObject(message);
+  }
+
+  async searchTagsInMessage(tags: string[]): Promise<ChatMessage[]>{
+
+    const messages = await this.chatMessageModel.find({tags: tags});
+    if (!messages){ 
+      throw new Error('No Message with such tags exist');
+    }
+    return messages.map(chatMessageToObject);
   }
 }

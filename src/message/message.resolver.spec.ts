@@ -48,6 +48,7 @@ const chatMessage: ChatMessage = {
   resolved: false,
   likes: [],
   likesCount: 0,
+  tags: [],
 };
 
 describe('MessageResolver', () => {
@@ -106,6 +107,7 @@ describe('MessageResolver', () => {
       return Promise.resolve({
         ...chatMessage,
         text: messageDto.text,
+        tags: messageDto.tags,
       });
     }
 
@@ -132,6 +134,7 @@ describe('MessageResolver', () => {
             id,
             text: 'a chat message',
             sender: { id: senderId.toHexString() },
+            tags: [],
           },
         ];
       }
@@ -147,6 +150,7 @@ describe('MessageResolver', () => {
             text: 'a chat message',
             sender: { id: senderId.toHexString() },
             richContent: {},
+            tags: [],
           },
         ];
       }
@@ -166,6 +170,7 @@ describe('MessageResolver', () => {
                 id: replyMessageId,
               },
             },
+            tags: []
           },
         ];
       }
@@ -224,11 +229,12 @@ describe('MessageResolver', () => {
       const message: MessageDto = {
         text: 'test',
         conversationId,
+        tags: [],
       };
 
       resolver.sendConversationMessage(message, authenticatedUser);
       expect(messageLogic.create).toBeCalledWith(
-        { conversationId, text: 'test' },
+        { conversationId, text: 'test', tags: [], },
         { accountRole: 'admin', userId },
       );
     });
@@ -239,11 +245,12 @@ describe('MessageResolver', () => {
         text: 'test',
         conversationId,
         richContent: {},
+        tags: [],
       };
 
       resolver.sendConversationMessage(message, authenticatedUser);
       expect(messageLogic.create).toBeCalledWith(
-        { conversationId, richContent: {}, text: 'test' },
+        { conversationId, richContent: {}, text: 'test', tags: [], },
         { accountRole: 'admin', userId },
       );
     });
@@ -258,6 +265,7 @@ describe('MessageResolver', () => {
             id: replyMessageId,
           },
         },
+        tags: [],
       };
 
       resolver.sendConversationMessage(message, authenticatedUser);
@@ -270,6 +278,7 @@ describe('MessageResolver', () => {
             },
           },
           text: 'test',
+          tags: [],
         },
         { accountRole: 'admin', userId },
       );
@@ -303,6 +312,7 @@ describe('MessageResolver', () => {
           likesCount: 0,
           sender: { id: senderId.toHexString() },
           text: 'a chat message',
+          tags: [],
         },
       ]);
     });
@@ -334,6 +344,7 @@ describe('MessageResolver', () => {
           richContent: {},
           sender: { id: senderId.toHexString() },
           text: 'a chat message',
+          tags: [],
         },
       ]);
     });
@@ -369,6 +380,7 @@ describe('MessageResolver', () => {
           },
           sender: { id: senderId.toHexString() },
           text: 'a reply message',
+          tags: [],
         },
       ]);
     });
@@ -548,6 +560,7 @@ describe('MessageResolver', () => {
         richContent: {
           poll: mockPoll,
         },
+        tags: [],
       };
 
       resolver.sendConversationMessage(message, authenticatedUser);
@@ -558,6 +571,7 @@ describe('MessageResolver', () => {
             poll: mockPoll,
           },
           text: '',
+          tags: [],
         },
         { accountRole: 'admin', userId },
       );

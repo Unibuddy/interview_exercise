@@ -25,4 +25,5 @@ export type MessagePayload = {
   imageCount?: number;
   attachments?: AttachmentDto[];
   poll?: PollDto;
+  tags: string[];
 };

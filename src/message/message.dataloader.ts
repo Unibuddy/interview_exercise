@@ -20,6 +20,7 @@ export class ChatMessageDataLoader
       created: new Date(),
       deleted: false,
       resolved: false,
+      tags: [],
     });
   }
 }

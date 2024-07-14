@@ -842,6 +842,7 @@ describe('ConversationData', () => {
               deleted: false,
               likes: [],
               resolved: false,
+              tags: [],
             },
             {
               id: secondLatestMessageId,
@@ -852,6 +853,7 @@ describe('ConversationData', () => {
               deleted: false,
               likes: [],
               resolved: false,
+              tags: [],
             },
           ]),
         );

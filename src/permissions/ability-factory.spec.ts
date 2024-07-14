@@ -373,6 +373,7 @@ describe('AbilityFactory', () => {
       conversation: { id: String(conversationId) },
       likes: [],
       likesCount: 0,
+      tags: [],
     };
 
     it('returns an empty set of abilities if the permissions array is empty', async () => {

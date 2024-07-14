@@ -204,6 +204,30 @@ export class ConversationData implements IConversationData {
     return conversation;
   }
 
+  async addTagsToMessage(
+    conversationId: string,
+    tags: Tag[],
+  ): Promise<ChatConversationModel> {
+    const result = await this.chatConversationModel.findById(conversationId);
+    if (!result) throw new Error('Could not update tags on conversation');
+
+    result.tags = tags;
+    await result.save();
+    const conversation = chatConversationToObject(result);
+
+    this.conversationCacheManagerService.set(conversation, conversationId);
+    return conversation;
+  }
+
+  async searchTagsInMessage(
+    tags: Tag[],
+  ): Promise<ChatConversationModel> {
+    const result = await this.chatConversationModel.findOne({tags: tags});
+    if (!result) throw new Error('Could not update tags on conversation');
+    const conversation = chatConversationToObject(result);
+    return conversation;
+  }
+
   async getConversation(
     conversationId: string,
   ): Promise<ChatConversationModel> {

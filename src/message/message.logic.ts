@@ -145,6 +145,7 @@ export class MessageLogic implements IMessageLogic {
       richContent: await this.mapRichContent(messageDto, message),
       resolved: message.resolved,
       isSenderBlocked: false,
+      tags: message.tags,
     });
 
     this.conversationChannel.send(sendMessageEvent, conversationId);
@@ -673,6 +674,36 @@ export class MessageLogic implements IMessageLogic {
       authenticatedUser.userId,
       option,
     );
+  }
+
+  async updateTags(messageId: ObjectID, tags: string[]){
+
+    try{
+
+      const message = await this.messageData.updateTags(messageId, tags);
+      return message;
+    } catch (error) {
+      throw new Error(`The message for id:${messageId} doesnot exist`);
+    }
+  }
+
+  async addTags(messageId: ObjectID, tags: string[]){
+    
+    try{
+      return await this.messageData.addTags(messageId, tags);
+    } catch (error) {
+      throw new Error(`The message for id:${messageId} doesnot exist`)
+    }
+  }
+
+  async searchTagsInMessage(tags: string[]){
+    try{
+
+      const message = await this.messageData.searchTagsInMessage(tags);
+      return message;
+    } catch (error) {
+      throw new Error(`No message found for given tag:${tags}` + error);
+    }
   }
 
   private validateOption(

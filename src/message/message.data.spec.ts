@@ -67,7 +67,10 @@ describe('MessageData', () => {
     it('successfully creates a message', async () => {
       const conversationId = new ObjectID();
       const message = await messageData.create(
-        { conversationId, text: 'Hello world' },
+        {
+          conversationId, text: 'Hello world',
+          tags: ["cool"]
+        },
         senderId,
       );
 
@@ -78,6 +81,7 @@ describe('MessageData', () => {
           deleted: false,
           reactions: [],
           text: 'Hello world',
+          tags: ["cool"],
           senderId: senderId,
           conversationId: conversationId,
           conversation: { id: conversationId.toHexString() },
@@ -98,7 +102,10 @@ describe('MessageData', () => {
     it('successfully gets a message', async () => {
       const conversationId = new ObjectID();
       const sentMessage = await messageData.create(
-        { conversationId, text: 'Hello world' },
+        {
+          conversationId, text: 'Hello world',
+          tags: []
+        },
         senderId,
       );
 
@@ -112,7 +119,10 @@ describe('MessageData', () => {
     it('successfully marks a message as deleted', async () => {
       const conversationId = new ObjectID();
       const message = await messageData.create(
-        { conversationId, text: 'Message to delete' },
+        {
+          conversationId, text: 'Message to delete',
+          tags: [],
+        },
         senderId,
       );
 

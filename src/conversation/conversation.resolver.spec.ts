@@ -138,6 +138,7 @@ describe('ConversationResolver', () => {
             resolved: false,
             likes: [],
             likesCount: 0,
+            tags: [],
           });
         });
       const conversation: ConversationDTO = {
@@ -161,6 +162,7 @@ describe('ConversationResolver', () => {
         resolved: false,
         likes: [],
         likesCount: 0,
+        tags: [],
       });
     });
 

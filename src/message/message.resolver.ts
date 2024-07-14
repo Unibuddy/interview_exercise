@@ -21,6 +21,9 @@ import {
   LikeMessageDto,
   ResolveMessageDto,
   ReactionDto,
+  UpdateTagsMessageDto,
+  addTagsMessageDto,
+  searchTagsMessageDto,
 } from './models/message.dto';
 import { MessageLogic } from './message.logic';
 import {
@@ -165,6 +168,30 @@ export class MessageResolver {
     );
   }
 
+  @Mutation(() => ChatMessage)
+  @UseGuards(GqlAuthGuard)
+  async updateTagsFromMessage(
+    @Args('updateTagsMessageDto') updateTagsMessageDto: UpdateTagsMessageDto,
+  ):Promise<ChatMessage> {
+    return await this.messageLogic.updateTags(updateTagsMessageDto.messageId, updateTagsMessageDto.tags);
+  }
+
+  @Mutation(() => ChatMessage)
+  @UseGuards(GqlAuthGuard)
+  async addTagsInMessage(
+    @Args('updateTagsMessageDto') addTagsMessageDto: addTagsMessageDto,
+  ):Promise<ChatMessage> {
+    return await this.messageLogic.addTags(addTagsMessageDto.messageId, addTagsMessageDto.tags);
+  }
+
+  @Mutation(() => ChatMessage)
+  @UseGuards(GqlAuthGuard)
+  async searchTagsInMessage(
+    @Args('updateTagsMessageDto') searchTagsMessageDto: searchTagsMessageDto,
+  ):Promise<ChatMessage[]> {
+    return await this.messageLogic.searchTagsInMessage(searchTagsMessageDto.tags);
+  }
+
   @ResolveField()
   text(@Parent() message: ChatMessage): string {
     return this.safeguardingService.clean(message.text);
@@ -219,3 +246,4 @@ export class RichMessageContentResolver {
     return response.richContent?.poll;
   }
 }
+
