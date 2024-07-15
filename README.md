@@ -82,9 +82,14 @@ While we don't expect everyone to complete this part of the exercise, it will fo
 
 We'd love to hear about
 * How you would go about implementing the solution
+- I would add a tag section to the message class used, with the default value being an empty array of strings,
+- then subsequently would add the functionality to the message.data file
 * What problems you might encounter
+- checking for all instances where I need to update the code to accomodate for changes in the class being used
 * How you would go about testing
+- unit test each individual added function, along with tests to see if the classes are working correctly
 * What you might do differently
+- Finish changes, apologies, had to comment out the code that was in progress
 
 # Additional
 The following docs are from the live service repo. You may find them helpful. 

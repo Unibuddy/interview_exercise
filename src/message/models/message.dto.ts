@@ -117,7 +117,7 @@ export class MessageDto {
   conversationId: ObjectID;
 
   @Field(() => RichContentDto, { nullable: true })
-  richContent?: RichContentDto;
+  richContent?: RichContentDto;  
 }
 
 // TODO Min - Max on limit

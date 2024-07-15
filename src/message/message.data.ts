@@ -22,6 +22,7 @@ export class MessageData {
   async create(
     data: MessageDto,
     senderId: ObjectID,
+    //tags: string[] = [] 
   ): Promise<ChatMessageModel> {
     const chatMessage = new this.chatMessageModel();
     chatMessage.text = data.text;
@@ -29,6 +30,7 @@ export class MessageData {
     chatMessage.conversationId = data.conversationId;
     chatMessage.created = new Date();
     chatMessage.deleted = false;
+    //chatMessage.tags = tags;
 
     createRichContent(data, chatMessage);
 
@@ -362,4 +364,16 @@ export class MessageData {
 
     return chatMessageToObject(updatedResult);
   }
+
+  /*async updateTags(
+    messageId: string,
+    tags: string [],
+  ): Promise<ChatMessage> {
+    const result = await this.chatMessageModel.findById(messageId);
+    if (!result) throw new Error('Could not update tags on conversation');
+    result.tags.push(...tags);
+    await result.save()
+    return chatMessageToObject(result);
+  }  TODO - carry out testing on this portion of the codebase */
+
 }

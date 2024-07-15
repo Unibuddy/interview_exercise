@@ -148,6 +148,9 @@ export class ChatMessage {
 
   @Field({ defaultValue: false, nullable: true })
   isSenderBlocked?: boolean;
+
+  /*@Field({ defaultValue: []})
+  tags?: string[];*/
 }
 
 /***
@@ -176,6 +179,8 @@ export class SocketChatMessage {
   reactions?: Reaction[];
 
   isSenderBlocked?: boolean;
+
+  tags?: string[];
 }
 
 @ObjectType()
