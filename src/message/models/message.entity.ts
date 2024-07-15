@@ -180,7 +180,7 @@ export class SocketChatMessage {
 
   isSenderBlocked?: boolean;
 
-  tags?: string[];
+  //tags?: string[];
 }
 
 @ObjectType()
