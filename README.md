@@ -72,13 +72,13 @@ The service fails to start - ```npm run start:dev``` -  Use the messages to fix 
 
 A test is failing - ```npm run test``` - implement the code necessary to pass the test
 
-## Part 3 - Strech
+## Part 3 - Stretch
 
 Currently, we allow tags to be added to a conversation, so we can help users to find things they're interested in.
 
 We would like to extend the functionality, to allow the sender of a message to add or update tags on a single message, and allow other users to find messages based on these tags.
 
-While we don't expect everyone to complete this part of the exercise, it will form the basis of disucssion in an interview. Please make as much progress with this, as you feel comfortable doing. Don't allow it to be all-consuming. A couple of hours at most for all parts of the exercise. 
+While we don't expect everyone to complete this part of the exercise, it will form the basis of discussion in an interview. Please make as much progress with this, as you feel comfortable doing. Don't allow it to be all-consuming. A couple of hours at most for all parts of the exercise. 
 
 We'd love to hear about
 * How you would go about implementing the solution
@@ -110,7 +110,7 @@ You can create a conversation through the [Swagger UI](http://localhost:3000/api
 The code in each module is separated into 3 layers
 1) controllers and/or resolvers: These provide the external interfaces for the REST and Graphql interfaces respectively, and passes the request to the logic layer
 2) logic: This implements common business rules, and can make requests to other modules and the repository layer to fulfil the request.
-3) repository: This manages hwo data is stored in the module. It should only be used directly by the logic layer.
+3) repository: This manages how data is stored in the module. It should only be used directly by the logic layer.
 
 
 my-app/
@@ -132,7 +132,7 @@ my-app/
 - E2e tests are in test folder
 - Jest is used for creating these tests.
 
-To run the unit tests you wil need to have the databases running - run `docker compose up -d`
+To run the unit tests you will need to have the databases running - run `docker compose up -d`
 
 ```bash
 # unit tests
