@@ -3,6 +3,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ObjectID } from 'mongodb';
 import { AttachmentType, GifType } from './message.dto';
 import { Field, ObjectType } from '@nestjs/graphql';
+//import tags
+import {Tag} from '../../conversation/models/CreateChatConversation.dto';
+import { ApiProperty } from '@nestjs/swagger';
+
 
 @Schema()
 export class ReplyMessage {
@@ -161,6 +165,10 @@ export class ChatMessageModel {
   conversation: { id: string };
   likesCount: number;
   sender: { id: string };
+
+  //adding a tag to each message
+  @ApiProperty({ type: [Tag], required: false })
+  tags?: Tag[];
 }
 
 export type ChatMessageDocument = ChatMessageModel & Document;

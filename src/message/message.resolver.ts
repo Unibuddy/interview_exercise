@@ -124,13 +124,14 @@ export class MessageResolver {
   }
 
   @Mutation(() => ChatMessage)
-  @UseGuards(GqlAuthGuard)
-  async likeConversationMessage(
-    @Args('likeMessageDto') likeMessageDto: LikeMessageDto,
-    @AuthenticatedUser() authenticatedUser: IAuthenticatedUser,
-  ): Promise<ChatMessage> {
-    await this.messageLogic.like(likeMessageDto, authenticatedUser);
-  }
+@UseGuards(GqlAuthGuard)
+async likeConversationMessage(
+  @Args('likeMessageDto') likeMessageDto: LikeMessageDto,
+  @AuthenticatedUser() authenticatedUser: IAuthenticatedUser,
+): Promise<ChatMessage> {
+  const chatMessage = await this.messageLogic.like(likeMessageDto, authenticatedUser);
+  return chatMessage;
+}
 
   @Mutation(() => ChatMessage)
   @UseGuards(GqlAuthGuard)

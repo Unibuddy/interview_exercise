@@ -89,8 +89,20 @@ export class MessageData {
 
   async delete(messageId: ObjectID): Promise<ChatMessage> {
     // TODO allow a message to be marked as deleted
-    return new ChatMessage() // Minimum to pass ts checks -replace this
+    const filterBy = { _id: messageId };
+    const updateProperty = { deleted: true };
+    const deletedMessage = await this.chatMessageModel.findOneAndUpdate(
+      filterBy,
+      updateProperty,
+      {
+        new: true,
+        returnOriginal: false,
+      }
+    );
+    if (!deletedMessage) throw new Error('The message to delete does not exist');
+    return chatMessageToObject(deletedMessage);
   }
+  
 
   async resolve(messageId: ObjectID): Promise<ChatMessage> {
     const filterBy = { _id: messageId };
@@ -358,4 +370,33 @@ export class MessageData {
 
     return chatMessageToObject(updatedResult);
   }
+
+  async addTags(messageId: ObjectID, tags: string[]): Promise<ChatMessageModel> {
+    const query = { _id: messageId };
+    const updateDocument = {
+      $addToSet: { tags: { $each: tags } },
+    };
+    const updatedMessage = await this.chatMessageModel.findOneAndUpdate(
+      query,
+      updateDocument,
+      { new: true }
+    );
+    if (!updatedMessage) throw new Error('Message not found');
+    return chatMessageToObject(updatedMessage);
+  }
+  
+  //attempt to step 3
+
+  // async updateTags(messageId: ObjectID, tags: string[]): Promise<ChatMessageModel> {
+  //   const query = { _id: messageId };
+  //   const updateDocument = { tags };
+  //   const updatedMessage = await this.chatMessageModel.findOneAndUpdate(
+  //     query,
+  //     updateDocument,
+  //     { new: true }
+  //   );
+  //   if (!updatedMessage) throw new Error('Message not found');
+  //   return chatMessageToObject(updatedMessage);
+  // }
+  
 }
