@@ -1,0 +1,44 @@
+version: '3.5'
+
+services:
+  mock-user-service:
+    image: mockserver/mockserver:mockserver-5.11.1
+    ports:
+      - 1080:1080
+    environment:
+      MOCKSERVER_MAX_EXPECTATIONS: 100
+      MOCKSERVER_MAX_HEADER_SIZE: 8192
+    healthcheck:
+      test: ["CMD", "java", "-version"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  mongo:
+    image: mongo:5.0.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: localadmin
+      MONGO_INITDB_ROOT_PASSWORD: localadmin
+      MONGO_DB_NAME: unibuddy-chat-local
+    ports:
+      - 27017:27017
+    healthcheck:
+      test:
+        [
+          'CMD',
+          '/bin/bash',
+          '-c',
+          'echo ''db.runCommand("ping").ok'' | mongo localhost:27017/test --quiet',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+
+  redis:
+    image: redis:6.0.20-alpine
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+ 

@@ -1,0 +1,21 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "assets": ["openapi.json", "safeguarding/bad-words*.txt"],
+    "plugins": [
+      {
+        "name": "@nestjs/graphql",
+        "options": {
+          "introspectComments": true
+        }
+      },
+      {
+        "name": "@nestjs/swagger/plugin",
+        "options": {
+          "introspectComments": true
+        }
+      }
+    ]
+  }
+}
